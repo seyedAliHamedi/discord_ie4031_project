@@ -1,0 +1,25 @@
+{
+  "name": "discord_ie4031_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seyedAliHamedi/discord_ie4031_project.git"
+  },
+  "author": "40004273_aliHamedi&40007953_amiraliGhaedi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seyedAliHamedi/discord_ie4031_project/issues"
+  },
+  "homepage": "https://github.com/seyedAliHamedi/discord_ie4031_project#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.0.5"
+  }
+}
