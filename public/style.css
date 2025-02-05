@@ -163,6 +163,10 @@ h3 {
   align-items: center;
   gap: 10px;
 }
+.speaking {
+  color: green;
+  transform: scale(2);
+}
 
 .voice-controls {
   display: flex;

@@ -66,6 +66,12 @@ function handleMuteToggle(data) {
   }
 }
 socket.on("voice", (data, userId) => {
+  const elements = document.getElementsByClassName("user-tile");
+
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].classList.remove("speaking");
+  }
+  document.getElementById(userId).classList.add("speaking");
   if (state.currentUser.id == userId) {
     return;
   }
@@ -88,6 +94,7 @@ socket.on("voice", (data, userId) => {
   audioBufferSource.connect(audioContext1.destination);
 
   audioBufferSource.start();
+  document.getElementById(userId).classList.remove("speaking");
 });
 
 function handleUserCreated(data) {
@@ -139,9 +146,7 @@ function handleUserJoined(data) {
       const li = document.createElement("li");
       li.setAttribute("data-user-id", user.id);
       li.innerHTML = `
-      <span class="${user.isSpeaking ? "speaking" : ""} ${
-        user.isMuted ? "muted" : ""
-      }">
+      <span id ="${user.id}" class="user-tile ${user.isMuted ? "muted" : ""}">
         ${user.name}
       </span>
     `;
@@ -192,6 +197,7 @@ function handleUserLeft(data) {
   } else if (user.id == state.currentUser.id) {
     currentChannel.style.display = "none";
     channelCreation.style.display = "block";
+    state.currentChannel = null;
   } else {
     channel.users.forEach((user) => {
       channelTitle.textContent = channel.name;
