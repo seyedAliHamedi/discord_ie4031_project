@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ie 4031 project</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="sidebar">
+        <div class="logo">
+          <i class="ri-wireless-wifi-line"></i>
+          <span>ie 4031 project</span>
+        </div>
+
+        <div class="user-section" id="user-creation">
+          <h2>Create User</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter Username"
+              required
+            />
+            <button id="create-user">
+              <i class="ri-user-add-line"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="channels-section" id="channel-creation">
+          <h2>Create Channel</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              id="channel-name"
+              placeholder="Channel Name"
+              required
+            />
+            <button id="create-channel">
+              <i class="ri-add-circle-line"></i>
+            </button>
+          </div>
+
+          <div class="channels-list">
+            <h3>Available Channels</h3>
+            <ul id="channels-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content" id="current-channel">
+        <div class="channel-header">
+          <h1 id="channel-title"></h1>
+          <div class="channel-actions">
+            <button id="leave-channel">
+              <i class="ri-logout-box-r-line"></i>
+              Leave
+            </button>
+          </div>
+        </div>
+
+        <div class="users-grid">
+          <h3>Channel Participants</h3>
+          <ul id="channel-users"></ul>
+        </div>
+
+        <div class="voice-controls">
+          <button id="voice-toggle">
+            <i class="ri-mic-line"></i>
+            <span>Start Voice</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+  </body>
+</html>
