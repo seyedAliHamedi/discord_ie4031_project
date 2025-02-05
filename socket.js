@@ -32,6 +32,9 @@ class SocketManager {
         this.channels.push(channel);
         this.io.emit("channel-created", { channels: this.channels });
       });
+      socket.on("audio", (data) => {
+        socket.broadcast.emit("voice", data);
+      });
 
       socket.on("join-channel", (channelId, user) => {
         const channel = this.channels.find((c) => c.id === channelId);
@@ -45,13 +48,17 @@ class SocketManager {
       });
 
       socket.on("leave-channel", (channelId, userId) => {
-        const channel = this.channels.find((c) => c.id === channelId);
+        var channel = this.channels.find((c) => c.id === channelId);
         const user = this.users.get(userId);
         channel.removeUser(user);
         user.clearChannel();
         socket.leave(channelId);
+        if (user.id == channel.owner.id) {
+          this.channels = this.channels.filter((c) => c.id != channelId);
+          channel = null;
+        }
 
-        this.io.emit("user-left", { user, channel });
+        this.io.emit("user-left", { user, channel, channels: this.channels });
       });
 
       socket.on("toggle-mute", (userId) => {
