@@ -6,6 +6,7 @@ class User {
     this.name = name;
     this.currentChannel = null;
     this.isSpeaking = false;
+    this.isMuted = false;
   }
 
   setChannel(channel) {
@@ -19,29 +20,14 @@ class User {
   setSpeaking(speaking) {
     this.isSpeaking = speaking;
   }
-}
-
-module.exports = User;
-const { v4: uuidv4 } = require("uuid");
-
-class User {
-  constructor(name) {
-    this.id = uuidv4();
-    this.name = name;
-    this.currentChannel = null;
-    this.isSpeaking = false;
+  isMuted() {
+    return this.isMuted;
   }
-
-  setChannel(channel) {
-    this.currentChannel = channel;
+  muteUser() {
+    this.isMuted = true;
   }
-
-  clearChannel() {
-    this.currentChannel = null;
-  }
-
-  setSpeaking(speaking) {
-    this.isSpeaking = speaking;
+  unmuteUser() {
+    this.isMuted = false;
   }
 }
 
