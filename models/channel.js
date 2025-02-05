@@ -6,7 +6,6 @@ class Channel {
     this.name = name;
     this.owner = owner;
     this.users = new Map();
-    this.mutedUsers = new Set();
   }
 
   addUser(user) {
@@ -17,18 +16,6 @@ class Channel {
   removeUser(userId) {
     this.users.delete(userId);
     this.mutedUsers.delete(userId);
-  }
-
-  muteUser(userId) {
-    this.mutedUsers.add(userId);
-  }
-
-  unmuteUser(userId) {
-    this.mutedUsers.delete(userId);
-  }
-
-  isUserMuted(userId) {
-    return this.mutedUsers.has(userId);
   }
 
   getUsers() {
