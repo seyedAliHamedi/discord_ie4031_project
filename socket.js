@@ -4,7 +4,7 @@ const Channel = require("./models/channel");
 
 class SocketManager {
   constructor(httpServer) {
-    this.io = Server(httpServer, {
+    this.io = new Server(httpServer, {
       cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -24,66 +24,34 @@ class SocketManager {
         const user = new User(username);
         console.log("New user:", user.id);
         this.users.set(user.id, user);
-        socket.emit("user-created", { user });
+        socket.emit("user-created", { user, channels: this.channels });
       });
 
-      socket.on("create-channel", (channelName, userId) => {
-        const user = this.users.get(userId);
+      socket.on("create-channel", (channelName, user) => {
         const channel = new Channel(channelName, user);
         this.channels.push(channel);
-        socket.emit("channel-created", { channel });
+        this.io.emit("channel-created", { channels: this.channels });
       });
 
-      socket.on("join-channel", (channelId, userId) => {
+      socket.on("join-channel", (channelId, user) => {
         const channel = this.channels.find((c) => c.id === channelId);
-        const user = this.users.get(userId);
+        const userObj = this.users.get(user.id);
+
         channel.addUser(user);
-        user.setChannel(channel);
+        userObj.setChannel(channel);
         socket.join(channelId);
 
-        this.io.to(channelId).emit("user-joined", { user, channel });
+        this.io.to(channelId).emit("user-joined", { channel });
       });
 
       socket.on("leave-channel", (channelId, userId) => {
         const channel = this.channels.find((c) => c.id === channelId);
         const user = this.users.get(userId);
-        channel.removeUser(userId);
+        channel.removeUser(user);
         user.clearChannel();
         socket.leave(channelId);
 
-        this.io.to(channelId).emit("user-left", { user, channel });
-      });
-
-      // --- WebRTC Signaling Events ---
-
-      socket.on("send-offer", (offer, targetUserId) => {
-        const targetUser = this.users.get(targetUserId);
-        if (
-          targetUser &&
-          targetUser.currentChannel === this.users.get(socket.id).currentChannel
-        ) {
-          socket.to(targetUserId).emit("receive-offer", offer, socket.id);
-        }
-      });
-
-      socket.on("send-answer", (answer, targetUserId) => {
-        const targetUser = this.users.get(targetUserId);
-        if (
-          targetUser &&
-          targetUser.currentChannel === this.users.get(socket.id).currentChannel
-        ) {
-          socket.to(targetUserId).emit("receive-answer", answer);
-        }
-      });
-
-      socket.on("send-ice-candidate", (candidate, targetUserId) => {
-        const targetUser = this.users.get(targetUserId);
-        if (
-          targetUser &&
-          targetUser.currentChannel === this.users.get(socket.id).currentChannel
-        ) {
-          socket.to(targetUserId).emit("receive-ice-candidate", candidate);
-        }
+        this.io.emit("user-left", { user, channel });
       });
 
       socket.on("toggle-mute", (userId) => {
@@ -98,22 +66,25 @@ class SocketManager {
           user: user,
         });
       });
-
-      socket.on("start-speaking", (userId) => {
-        const user = this.users.get(userId);
-        user.setSpeaking(true);
-
-        this.io.to(user.currentChannel.id).emit("speaking-started", {
-          user: user,
+      // WebRTC Signaling Events
+      socket.on("offer", (data) => {
+        socket.to(data.to).emit("offer", {
+          offer: data.offer,
+          from: socket.id,
         });
       });
 
-      socket.on("stop-speaking", (userId) => {
-        const user = this.users.get(userId);
-        user.setSpeaking(false);
+      socket.on("answer", (data) => {
+        socket.to(data.to).emit("answer", {
+          answer: data.answer,
+          from: socket.id,
+        });
+      });
 
-        this.io.to(user.currentChannel.id).emit("speaking-stopped", {
-          user: user,
+      socket.on("ice-candidate", (data) => {
+        socket.to(data.to).emit("ice-candidate", {
+          candidate: data.candidate,
+          from: socket.id,
         });
       });
     });

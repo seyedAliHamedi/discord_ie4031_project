@@ -5,17 +5,16 @@ class Channel {
     this.id = uuidv4();
     this.name = name;
     this.owner = owner;
-    this.users = new Map();
+    this.users = [];
   }
 
   addUser(user) {
-    this.users.set(user.id, user);
+    this.users.push(user);
     return user;
   }
 
-  removeUser(userId) {
-    this.users.delete(userId);
-    this.mutedUsers.delete(userId);
+  removeUser(user) {
+    this.users.splice(this.users.indexOf(user), 1);
   }
 
   getUsers() {

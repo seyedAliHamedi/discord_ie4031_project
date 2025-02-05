@@ -1,9 +1,12 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
+const SocketManager = require("./socket");
 
 const app = express();
 const server = http.createServer(app);
+
+const socketManager = new SocketManager(server);
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
