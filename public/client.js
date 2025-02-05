@@ -177,6 +177,8 @@ function muteUser(event, user) {
 function handleUserLeft(data) {
   const { user, channel, channels } = data;
   if (!channel) {
+    state.currentChannel = null;
+
     currentChannel.style.display = "none";
     channelCreation.style.display = "block";
     channelsList.innerHTML = "";
