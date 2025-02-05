@@ -41,6 +41,9 @@ body {
   font-size: 2rem;
 }
 
+.channels-section {
+  display: none;
+}
 .user-section,
 .channels-section {
   margin-bottom: 25px;
@@ -109,6 +112,7 @@ h3 {
   padding: 25px;
   display: flex;
   flex-direction: column;
+  display: none;
 }
 
 .channel-header {
