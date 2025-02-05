@@ -65,8 +65,10 @@ function handleMuteToggle(data) {
     state.currentUser.isMuted = user.isMuted;
   }
 }
-socket.on("voice", (data) => {
-  console.log(data);
+socket.on("voice", (data, userId) => {
+  if (state.currentUser.id == userId) {
+    return;
+  }
   var audioContext1 = new (window.AudioContext || window.webkitAudioContext)();
 
   const typedArray = new Float32Array(data);
@@ -247,7 +249,12 @@ function startStreaming() {
 
     const inputBuffer = audioProcessingEvent.inputBuffer;
     const audioData = inputBuffer.getChannelData(0);
-    socket.emit("audio", audioData);
+    socket.emit(
+      "audio",
+      audioData,
+      state.currentChannel.id,
+      state.currentUser.id
+    );
   };
 
   state.mediaStreamSource.connect(state.scriptNode);

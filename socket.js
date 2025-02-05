@@ -32,8 +32,9 @@ class SocketManager {
         this.channels.push(channel);
         this.io.emit("channel-created", { channels: this.channels });
       });
-      socket.on("audio", (data) => {
-        socket.broadcast.emit("voice", data);
+      socket.on("audio", (data, channelId, userId) => {
+        const channel = this.channels.find((c) => c.id === channelId);
+        this.io.to(channelId).emit("voice", data, userId);
       });
 
       socket.on("join-channel", (channelId, user) => {
